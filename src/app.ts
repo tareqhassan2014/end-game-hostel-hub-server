@@ -16,6 +16,8 @@ class App {
         this.initializeDataBaseConnection();
         this.initializeMiddleWare();
         this.initializeControllers();
+        this.port = port;
+        this.uri = 
     }
 
     private initializeMiddleWare(): void {
