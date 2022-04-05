@@ -17,7 +17,7 @@ class App {
         this.initializeMiddleWare();
         this.initializeControllers();
         this.port = port;
-        this.uri = 
+        this.uri = uri;
     }
 
     private initializeMiddleWare(): void {
