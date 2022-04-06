@@ -1,5 +1,5 @@
-import bcrypt from 'bcrypt';
-import mongoose, { model, Schema } from 'mongoose';
+/* eslint-disable func-names */
+import { model, Schema } from 'mongoose';
 import IUser from './auth.interface';
 
 const UserModel = new Schema(
@@ -18,49 +18,23 @@ const UserModel = new Schema(
         },
         phone: {
             type: String,
-            required: [true, 'Phone number id required'],
         },
         role: {
             type: String,
-            default: 'user',
-            enum: ['admin', 'merchant', 'user'],
+            default: 'pending',
+            enum: ['pending', 'admin', 'moderator', 'vendor', 'user'],
         },
         status: {
             type: String,
             default: 'pending',
             enum: ['pending', 'verified', 'blocked'],
         },
-        img: String,
-        password: {
+        img: {
             type: String,
-            required: [true, 'Password is required!'],
-            minlength: [
-                6,
-                'Password should be greater than or equal 6 character!',
-            ],
+            default: 'https://i.ibb.co/dBQjP3N/profile.png',
         },
     },
     { timestamps: true }
 );
-
-UserModel.pre<IUser>('save', async function (next) {
-    if (!this.isModified('password')) {
-        return next();
-    }
-
-    const hash = await bcrypt.hash(this.password, 10);
-    this.password = hash;
-    next();
-});
-
-UserModel.path('email').validate(async (email: string) => {
-    return !(await mongoose.models.User.countDocuments({ email }));
-});
-
-UserModel.methods.isValidPassword = async function (
-    password: string
-): Promise<Error | boolean> {
-    return await bcrypt.compare(password, this.password);
-};
 
 export default model<IUser>('User', UserModel);

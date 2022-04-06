@@ -45,9 +45,8 @@ class UserService {
 
             if (await user.isValidPassword(password)) {
                 return Jwt.issueJWT(user);
-            } else {
-                throw new Error('invalid credentials given');
             }
+            throw new Error('invalid credentials given');
         } catch (error) {
             throw new Error('can not login now try agin later');
         }

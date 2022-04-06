@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import jwt from 'jsonwebtoken';
 import IUser from '../resources/auth/auth.interface';
 
@@ -5,11 +6,11 @@ const jwtSecret = process.env.JWT_SECRET as jwt.Secret;
 
 class Jwt {
     issueJWT(user: IUser) {
-        const _id = user._id;
+        const { _id } = user;
 
         const filteredUserData = {
             role: user.role,
-            _id: _id,
+            _id,
             status: user.status,
             email: user.status,
         };
@@ -21,13 +22,14 @@ class Jwt {
         };
 
         const signedToken = jwt.sign(payload, jwtSecret, { expiresIn: '1d' });
-        return 'Bearer ' + signedToken;
+        return `Bearer ${signedToken}`;
     }
 
     async verifyJWT(accessToken: string) {
         try {
             return await jwt.verify(accessToken, jwtSecret);
         } catch (err) {
+            console.log(err);
             return false;
         }
     }

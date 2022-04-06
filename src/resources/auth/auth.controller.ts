@@ -1,25 +1,20 @@
-import { NextFunction, Request, Response } from 'express';
-import jwt from '../../library/jwt';
+import { Request, Response } from 'express';
 import responseGenerator from '../../utility/responseGenerator';
 import UserModel from './auth.model';
 
-export const signUp = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+export const signUp = async (req: Request, res: Response) => {
     try {
-        const body = {
-            name: req.body.name,
+        const ExistingUser = await UserModel.findOne({
             email: req.body.email,
-            phone: req.body.phone,
-            password: req.body.password,
-        };
+        });
 
-        const user = await UserModel.create(body);
-        const token = jwt.issueJWT(user);
+        if (ExistingUser) {
+            return res.json({ user: ExistingUser });
+        }
 
-        return res.json({ user, token });
+        const user = await UserModel.create(req.body);
+
+        return res.json({ user });
     } catch (err: any) {
         return res
             .status(500)
@@ -27,27 +22,11 @@ export const signUp = async (
     }
 };
 
-export const login = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
-    const email = req.body.email;
-    const password = req.body.password;
-
+export const login = async (req: Request, res: Response) => {
     try {
+        const email = req.decodedEmail;
         const user = await UserModel.findOne({ email });
-
-        if (!user) {
-            return res.status(400).json('no user With this email');
-        }
-        const isValidPassword = await user.isValidPassword(password);
-        if (!isValidPassword) {
-            return res.status(400).json('incorrect email or password');
-        }
-
-        const token = jwt.issueJWT(user);
-        return res.json({ user, token });
+        return res.json({ user });
     } catch (err: any) {
         return res.status(500).json(err.message);
     }

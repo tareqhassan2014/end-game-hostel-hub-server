@@ -38,7 +38,7 @@ const ProductModel = new Schema(
         priceDiscount: {
             type: Number,
             validate: {
-                validator: function (this: any, val: number) {
+                validator(this: any, val: number) {
                     return val < this.price;
                 },
             },
@@ -61,7 +61,7 @@ ProductModel.virtual('discount').get(function (this: IProduct) {
     return this.price / 10;
 });
 
-//Document middleware function work before .save() and .create() method and don't work on .insertMany()
+// Document middleware function work before .save() and .create() method and don't work on .insertMany()
 // ProductModel.pre<IProduct>('save', async function (next) {
 //     console.log(this);
 //     //Do something
@@ -83,7 +83,7 @@ ProductModel.pre(/^find/, function (next) {
 //     next();
 // });
 
-//Aggregation middleware
+// Aggregation middleware
 
 // ProductModel.pre('aggregate', function (next) {
 //     this.pipeline().unshift({ $match: { publish: { $ne: true } } });
