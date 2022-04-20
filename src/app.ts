@@ -6,7 +6,9 @@ import mongoose from 'mongoose';
 import morgan from 'morgan';
 import { notFound } from './middleware/error';
 import authRoute from './resources/auth/auth.router';
+import hostelRoute from './resources/hostel/hostel.router';
 import productRoute from './resources/product/product.router';
+import storeRoute from './resources/store/store.router';
 
 class App {
     public express: Application;
@@ -41,6 +43,8 @@ class App {
     private initializeControllers() {
         this.express.use('/api/v1/product', productRoute);
         this.express.use('/api/v1/auth', authRoute);
+        this.express.use('/api/v1/hostel', hostelRoute);
+        this.express.use('/api/v1/store', storeRoute);
         this.express.all('*', notFound);
     }
 
