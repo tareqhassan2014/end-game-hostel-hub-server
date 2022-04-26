@@ -21,8 +21,8 @@ const UserModel = new Schema(
         },
         role: {
             type: String,
-            default: 'pending',
-            enum: ['pending', 'admin', 'moderator', 'vendor', 'user'],
+            default: 'user',
+            enum: ['member', 'admin', 'moderator', 'vendor', 'user'],
         },
         status: {
             type: String,
