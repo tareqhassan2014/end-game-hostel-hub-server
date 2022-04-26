@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { AppError } from './appError';
 
 const handleCastErrorDB = (err: any) => {
@@ -57,9 +57,13 @@ const sendErrorProd = (err: any, res: Response) => {
     }
 };
 
-export const globalErrorHandler = (err: any, req: Request, res: Response) => {
-    console.log('globalErrorHandler');
-
+export const globalErrorHandler = (
+    err: any,
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    console.log('Error', err.name);
     err.statusCode = err.statusCode || 500;
     err.status = err.status || 'error';
 
@@ -68,12 +72,17 @@ export const globalErrorHandler = (err: any, req: Request, res: Response) => {
     } else if (process.env.NODE_ENV === 'production') {
         let error = { ...err };
 
-        if (error.name === 'CastError') error = handleCastErrorDB(error);
-        if (error.code === 11000) error = handleDuplicateFieldsDB(error);
-        if (error.name === 'ValidationError')
+        if (error.name === 'CastError') {
+            error = handleCastErrorDB(error);
+        } else if (error.code === 11000) {
+            error = handleDuplicateFieldsDB(error);
+        } else if (error.name === 'ValidationError') {
             error = handleValidationErrorDB(error);
-        if (error.name === 'JsonWebTokenError') error = handleJWTError();
-        if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
+        } else if (error.name === 'JsonWebTokenError') {
+            error = handleJWTError();
+        } else if (error.name === 'TokenExpiredError') {
+            error = handleJWTExpiredError();
+        }
 
         sendErrorProd(error, res);
     }
