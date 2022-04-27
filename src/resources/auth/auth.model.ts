@@ -33,7 +33,24 @@ const UserModel = new Schema(
             default: 'https://i.ibb.co/dBQjP3N/profile.png',
         },
     },
-    { timestamps: true }
+    {
+        timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
+    }
 );
+
+// Virtual populate
+UserModel.virtual('store', {
+    ref: 'Store',
+    foreignField: 'vendor',
+    localField: '_id',
+});
+
+UserModel.virtual('hostel', {
+    ref: 'Hostel',
+    foreignField: 'admin',
+    localField: '_id',
+});
 
 export default model<IUser>('User', UserModel);
