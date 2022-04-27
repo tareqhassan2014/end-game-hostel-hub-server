@@ -3,18 +3,15 @@ import {
     createProduct,
     deleteProduct,
     getAllProduct,
-    getMonthlyPlan,
     getProductByID,
-    getProductStatistics,
+    setStoreId,
     updateProduct,
 } from './product.controller';
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.route('/').get(getAllProduct).post(createProduct);
-
-router.route('/product-statistic').get(getProductStatistics);
-router.route('/monthly-plan/:year').get(getMonthlyPlan);
+router.route('/product').post(setStoreId, createProduct);
 
 router
     .route('/:id')

@@ -1,4 +1,3 @@
-/* eslint-disable func-names */
 import { model, Schema } from 'mongoose';
 import IUser from './auth.interface';
 
