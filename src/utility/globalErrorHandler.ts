@@ -37,24 +37,30 @@ const sendErrorDev = (err: any, res: Response) => {
 };
 
 const sendErrorProd = (err: any, res: Response) => {
-    // Operational, trusted error: send message to client
-    if (err.isOperational) {
-        res.status(err.statusCode).json({
-            status: err.status,
-            message: err.message,
-        });
+    return res.status(err.statusCode).json({
+        status: err.status,
+        error: err,
+        message: err.message,
+    });
 
-        // Programming or other unknown error: don't leak error details
-    } else {
-        // 1) Log error
-        console.error('ERROR 💥', err);
+    // // Operational, trusted error: send message to client
+    // if (err.isOperational) {
+    //     res.status(err.statusCode).json({
+    //         status: err.status,
+    //         message: err.message,
+    //     });
 
-        // 2) Send generic message
-        res.status(500).json({
-            status: 'error',
-            message: 'Something went very wrong!',
-        });
-    }
+    //     // Programming or other unknown error: don't leak error details
+    // } else {
+    //     // 1) Log error
+    //     console.error('ERROR 💥', err);
+
+    //     // 2) Send generic message
+    //     res.status(500).json({
+    //         status: 'error',
+    //         message: 'Something went very wrong!',
+    //     });
+    // }
 };
 
 export const globalErrorHandler = (
