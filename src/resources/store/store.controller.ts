@@ -11,7 +11,7 @@ import {
 import storeModel from './store.model';
 
 export const getAllStores = getAll(storeModel);
-export const getStoreBuyId = getOne(storeModel);
+export const getStoreBuyId = getOne(storeModel, { path: 'products' });
 export const createStore = createOne(storeModel);
 export const updateStore = updateOne(storeModel);
 export const deleteStore = deleteOne(storeModel);

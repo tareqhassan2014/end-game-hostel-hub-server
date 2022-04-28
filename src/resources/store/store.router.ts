@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { updateUserToVendor } from '../auth/auth.controller';
-import productRouter from '../product/product.router';
 import {
     createStore,
     deleteStore,
@@ -11,7 +10,7 @@ import {
 
 const router = Router({ mergeParams: true });
 
-router.use('/:storeId', productRouter);
+// router.use('/:storeId', productRouter);
 
 router
     .route('/')

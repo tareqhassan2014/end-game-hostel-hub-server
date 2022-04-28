@@ -40,16 +40,16 @@ const UserModel = new Schema(
     }
 );
 
-// Virtual populate
-UserModel.virtual('store', {
-    ref: 'Store',
-    foreignField: 'vendor',
-    localField: '_id',
-});
-
+// virtual populate
 UserModel.virtual('hostel', {
     ref: 'Hostel',
     foreignField: 'admin',
+    localField: '_id',
+});
+
+UserModel.virtual('store', {
+    ref: 'Store',
+    foreignField: 'vendor',
     localField: '_id',
 });
 

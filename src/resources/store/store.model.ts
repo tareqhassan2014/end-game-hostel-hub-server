@@ -26,6 +26,7 @@ const StoreModel = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'User',
             required: [true, 'A hostel must have a Admin'],
+            unique: true,
         },
         status: {
             type: String,
@@ -35,6 +36,8 @@ const StoreModel = new Schema(
     },
     {
         timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
     }
 );
 
@@ -44,6 +47,13 @@ StoreModel.pre(/^find/, function (next) {
         select: '-createdAt -updatedAt -__v',
     }).select('-__v -updatedAt');
     next();
+});
+
+// virtual population
+StoreModel.virtual('products', {
+    ref: 'Product',
+    foreignField: 'store',
+    localField: '_id',
 });
 
 export default model<IStore>('Store', StoreModel);

@@ -49,6 +49,7 @@ const HostelModel = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'User',
             required: [true, 'A hostel must have a Admin'],
+            unique: true,
         },
     },
     {
@@ -56,12 +57,4 @@ const HostelModel = new Schema(
     }
 );
 
-HostelModel.pre(/^find/, function (next) {
-    this.populate({
-        path: 'admin',
-        select: '-createdAt -updatedAt -__v',
-    }).select('-__v -updatedAt');
-    next();
-});
-
-export default model<IHostel>('hostel', HostelModel);
+export default model<IHostel>('Hostel', HostelModel);

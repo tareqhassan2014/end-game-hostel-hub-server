@@ -1,38 +1,32 @@
 import { NextFunction, Request, Response } from 'express';
 import { AppError } from '../../utility/appError';
 import { catchAsync } from '../../utility/catchAsync';
-import responseGenerator from '../../utility/responseGenerator';
 import UserModel from './auth.model';
 
-export const signUp = async (req: Request, res: Response) => {
-    try {
-        const ExistingUser = await UserModel.findOne({
-            email: req.body.email,
-        });
+export const signUp = catchAsync(async (req: Request, res: Response) => {
+    const ExistingUser = await UserModel.findOne({
+        email: req.body.email,
+    });
 
-        if (ExistingUser) {
-            return res.json({ user: ExistingUser });
-        }
-
-        const user = await UserModel.create(req.body);
-
-        return res.json({ user });
-    } catch (err: any) {
-        return res
-            .status(500)
-            .json(responseGenerator('fail', err.message, true));
+    if (ExistingUser) {
+        return res.json({ user: ExistingUser });
     }
-};
 
-export const login = async (req: Request, res: Response) => {
-    try {
-        const email = req.decodedEmail;
-        const user = await UserModel.findOne({ email });
-        return res.json({ user });
-    } catch (err: any) {
-        return res.status(500).json(err.message);
-    }
-};
+    const user = await UserModel.create(req.body);
+
+    return res.json({ user });
+});
+
+export const login = catchAsync(async (req: Request, res: Response) => {
+    const email = req.decodedEmail;
+    const user = await UserModel.findOne({ email })
+        .populate({
+            path: 'store',
+        })
+        .populate({ path: 'hostel' });
+
+    return res.json({ user });
+});
 
 export const updateUserToAdmin = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
@@ -65,5 +59,18 @@ export const updateUserToVendor = catchAsync(
         }
 
         next();
+    }
+);
+
+export const virtualPopulate = catchAsync(
+    async (req: Request, res: Response) => {
+        const email = req.params.email;
+        const user = await UserModel.findOne({ email })
+            .populate({
+                path: 'store',
+            })
+            .populate({ path: 'hostel' });
+
+        return res.json({ user });
     }
 );

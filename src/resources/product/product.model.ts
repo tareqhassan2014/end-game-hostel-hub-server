@@ -65,10 +65,10 @@ ProductModel.virtual('discount').get(function (this: IProduct) {
 //     next();
 // });
 
-ProductModel.pre(/^find/, function (next) {
-    this.find({ publish: { $ne: true } });
-    next();
-});
+// ProductModel.pre(/^find/, function (next) {
+//     this.find({ publish: { $ne: true } });
+//     next();
+// });
 
 // ProductModel.post(/^find/, function (doc, next) {
 //     next();
